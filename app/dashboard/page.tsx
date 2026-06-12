@@ -650,7 +650,7 @@ export default function DashboardPage() {
                     { label: "Knowledge Graph",  href: "/graph",        icon: Network },
                     { label: "NLP Roadmap",       href: "/roadmap/nlp",  icon: Map },
                     { label: "STEM DNA Report",   href: "/report",       icon: FileText },
-                    { label: "Assessment",        href: "/assessment",   icon: BarChart3 },
+                    { label: "Assessment",        href: "/onboarding",   icon: BarChart3 },
                   ].map((link) => (
                     <a
                       key={link.label}
