@@ -10,6 +10,7 @@ import { SubjectBar } from "./subject-bar"
 import { CareerCard } from "./career-card"
 import { reportData } from "./data"
 import { cn } from "@/lib/utils"
+import { AppTopBar } from "@/components/app-top-bar"
 
 const profileIconMap: Record<string, React.ReactNode> = {
   eye: <Eye className="size-4" />,
@@ -35,28 +36,21 @@ export function ReportClient() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar strip */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
-            <div className="size-7 rounded-lg bg-primary flex items-center justify-center">
-              <Dna className="size-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-sm text-foreground">
-              Concept <span className="text-primary">DNA</span>
-            </span>
-          </a>
-          <div className="flex items-center gap-2">
+      <AppTopBar
+        pageLabel="STEM DNA Report"
+        rightSlot={
+          <>
             <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
               <Share2 className="size-3.5" />
-              Share
+              <span className="hidden sm:inline">Share</span>
             </Button>
             <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5">
               <Download className="size-3.5" />
-              Export PDF
+              <span className="hidden sm:inline">Export PDF</span>
             </Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <main className="max-w-6xl mx-auto px-6 py-10 flex flex-col gap-10">
 

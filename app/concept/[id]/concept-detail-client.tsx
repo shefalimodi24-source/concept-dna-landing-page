@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation"
 import { NODES, STATUS_META, type GraphNode } from "@/app/graph/data"
+import { AppTopBar } from "@/components/app-top-bar"
 import {
   Dna,
   ChevronRight,
@@ -463,48 +464,22 @@ export function ConceptDetailClient() {
     <div className="min-h-screen bg-background">
 
       {/* ── Navbar ── */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2 shrink-0">
-            <div className="size-7 rounded-lg bg-primary flex items-center justify-center">
-              <Dna className="size-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-sm text-foreground hidden sm:block">
-              Concept <span className="text-primary">DNA</span>
-            </span>
-          </a>
-
-          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground overflow-hidden min-w-0">
-            <a href="/graph" className="hover:text-foreground transition-colors shrink-0 hidden sm:block truncate">
-              Knowledge Graph
-            </a>
-            <ChevronRight className="size-3.5 shrink-0 hidden sm:block" />
-            <span className="text-foreground font-medium truncate">{node.label}</span>
-          </nav>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="gap-1.5 text-muted-foreground hover:text-foreground"
-              nativeButton={false}
-              render={<a href="/graph" />}
-            >
-              <ChevronLeft className="size-3.5" />
-              <span className="hidden sm:inline">Graph</span>
-            </Button>
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
-              nativeButton={false}
-              render={<a href="/roadmap" />}
-            >
-              <ArrowRight className="size-3.5" />
-              <span className="hidden sm:inline">My Roadmap</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <AppTopBar
+        pageLabel={node.label}
+        parent={{ label: "Knowledge Graph", href: "/graph" }}
+        rightSlot={
+          <Button
+            size="sm"
+            variant="ghost"
+            className="gap-1.5 text-muted-foreground hover:text-foreground text-xs"
+            nativeButton={false}
+            render={<a href="/graph" />}
+          >
+            <ChevronLeft className="size-3.5" />
+            <span className="hidden sm:inline">Graph</span>
+          </Button>
+        }
+      />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { getRoadmap, SUGGESTED_TOPICS, type GeneratedRoadmap } from "./data"
 import { RoadmapDisplay } from "./roadmap-display"
+import { AppTopBar } from "@/components/app-top-bar"
 
 // ─── Empty state illustration ──────────────────────────────────────────────
 function EmptyState({ onSuggest }: { onSuggest: (topic: string) => void }) {
@@ -181,36 +182,7 @@ export function RoadmapClient() {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Navbar ── */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2 shrink-0">
-            <div className="size-7 rounded-lg bg-primary flex items-center justify-center">
-              <Dna className="size-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-sm text-foreground hidden sm:block">
-              Concept <span className="text-primary">DNA</span>
-            </span>
-          </a>
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <a href="/" className="hover:text-foreground transition-colors hidden sm:block">Home</a>
-            <ChevronRight className="size-3.5 hidden sm:block" />
-            <span className="text-foreground font-medium">Roadmap Generator</span>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
-              nativeButton={false}
-              render={<a href="/graph" />}
-            >
-              <BookOpen className="size-3.5" />
-              <span className="hidden sm:inline">Knowledge Graph</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <AppTopBar pageLabel="Roadmap Generator" />
 
       {/* ── Hero + Search ── */}
       <div className="bg-background border-b border-border">

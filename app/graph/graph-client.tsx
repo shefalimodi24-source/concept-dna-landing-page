@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import { type GraphNode, type NodeStatus, STATUS_META, NODES, SUBJECTS } from "./data"
 import { GraphCanvas } from "./graph-canvas"
 import { NodeDrawer } from "./node-drawer"
+import { AppTopBar } from "@/components/app-top-bar"
 
 const FILTERS: { label: string; value: NodeStatus | "all" }[] = [
   { label: "All", value: "all" },
@@ -46,43 +47,15 @@ export function GraphClient() {
     <div className="flex flex-col h-screen bg-background overflow-hidden">
 
       {/* ── Top Navbar ── */}
-      <header className="shrink-0 z-20 bg-background/95 backdrop-blur border-b border-border">
-        <div className="h-14 px-5 flex items-center justify-between gap-4">
-          {/* Brand */}
-          <a href="/" className="flex items-center gap-2 shrink-0">
-            <div className="size-7 rounded-lg bg-primary flex items-center justify-center">
-              <Dna className="size-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-sm text-foreground hidden sm:block">
-              Concept <span className="text-primary">DNA</span>
-            </span>
-          </a>
-
-          {/* Page title */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <a href="/" className="hover:text-foreground transition-colors">Home</a>
-            <ChevronRight className="size-3.5" />
-            <span className="text-foreground font-medium">Knowledge Graph</span>
+      <AppTopBar
+        pageLabel="Knowledge Graph"
+        rightSlot={
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            <div className="size-1.5 rounded-full bg-emerald-500" />
+            {masteredCount}/{NODES.length} Mastered
           </div>
-
-          {/* Progress pill */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-xs font-medium text-muted-foreground">
-              <div className="size-1.5 rounded-full bg-emerald-500" />
-              {masteredCount}/{NODES.length} Mastered
-            </div>
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
-              nativeButton={false}
-              render={<a href="/report" />}
-            >
-              <Activity className="size-3.5" />
-              View Report
-            </Button>
-          </div>
-        </div>
-      </header>
+        }
+      />
 
       {/* ── Content: Sidebar + Canvas ── */}
       <div className="flex-1 flex min-h-0 overflow-hidden">

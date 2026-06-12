@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar"
+import { AppTopBar } from "@/components/app-top-bar"
 import { AssessmentClient } from "./assessment-client"
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
 export default function AssessmentPage() {
   return (
     <>
-      <Navbar />
+      <AppTopBar pageLabel="STEM DNA Assessment" />
       <main>
         <AssessmentClient />
       </main>
