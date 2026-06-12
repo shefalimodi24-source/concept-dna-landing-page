@@ -235,7 +235,7 @@ export function QuizModal({
         ) : result ? (
           <ResultsPhase
             result={result}
-            onContinue={() => router.push("/assessment")}
+            onContinue={() => router.push("/dashboard")}
             onClose={onClose}
           />
         ) : null}
