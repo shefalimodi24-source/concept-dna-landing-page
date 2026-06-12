@@ -58,7 +58,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-semibold px-7 rounded-xl gap-2"
-                render={<a href="/assessment" />}
+                render={<a href="/auth" />}
                 nativeButton={false}
               >
                 Get Started

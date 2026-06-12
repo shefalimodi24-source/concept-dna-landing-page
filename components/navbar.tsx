@@ -57,10 +57,10 @@ export function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" nativeButton={false} render={<a href="/auth" />}>
             Sign In
           </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium" nativeButton={false} render={<a href="/assessment" />}>
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium" nativeButton={false} render={<a href="/auth" />}>
             Get Started
           </Button>
         </div>
@@ -89,10 +89,10 @@ export function Navbar() {
             </a>
           ))}
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
-            <Button variant="ghost" size="sm" className="justify-start text-muted-foreground">
+            <Button variant="ghost" size="sm" className="justify-start text-muted-foreground" nativeButton={false} render={<a href="/auth" />}>
               Sign In
             </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" nativeButton={false} render={<a href="/assessment" />}>
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" nativeButton={false} render={<a href="/auth" />}>
               Get Started
             </Button>
           </div>
