@@ -8,6 +8,7 @@ import {
   Brain, Cpu, Eye, Shield, Database, Atom, Bot, X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { QuizModal } from "./quiz-modal"
 
 // ── Goal data ─────────────────────────────────────────────────────────────────
 
@@ -186,6 +187,7 @@ export default function OnboardingPage() {
   const [search, setSearch] = useState("")
   const [selected, setSelected] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [showQuiz, setShowQuiz] = useState(false)
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
@@ -214,12 +216,22 @@ export default function OnboardingPage() {
 
   function handleGenerate() {
     if (!selected.length) return
-    setLoading(true)
-    setTimeout(() => router.push("/assessment"), 800)
+    setShowQuiz(true)
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {showQuiz && preview && (
+        <QuizModal
+          goalId={preview.primaryGoal.id}
+          goalLabel={preview.primaryGoal.label}
+          goalColor={preview.primaryGoal.color}
+          goalBgColor={preview.primaryGoal.bgColor}
+          goalMonths={preview.maxMonths}
+          careers={preview.careers}
+          onClose={() => setShowQuiz(false)}
+        />
+      )}
 
       {/* Sticky top bar */}
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
