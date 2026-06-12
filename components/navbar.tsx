@@ -9,7 +9,7 @@ const navLinks = [
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Knowledge Graph", href: "/graph" },
-  { label: "Roadmaps", href: "#roadmaps" },
+  { label: "Roadmap Generator", href: "/roadmap" },
 ]
 
 export function Navbar() {
