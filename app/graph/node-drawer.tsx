@@ -240,9 +240,19 @@ export function NodeDrawer({ node, onClose }: NodeDrawerProps) {
             </div>
 
             {/* Footer CTA */}
-            <div className="px-6 py-4 border-t border-border">
+            <div className="px-6 py-4 border-t border-border flex flex-col gap-2">
               <Button
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-semibold"
+                size="sm"
+                nativeButton={false}
+                render={<a href={`/concept/${node.id}`} />}
+              >
+                View Full Concept Detail
+                <ArrowRight className="size-3.5" />
+              </Button>
+              <Button
+                className="w-full gap-2 font-medium"
+                variant="outline"
                 size="sm"
               >
                 Add to Learning Roadmap
