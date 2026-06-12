@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Dna } from "lucide-react"
 
 const steps = [
@@ -20,10 +21,19 @@ const subjectScores = [
 ]
 
 export function GeneratingScreen() {
+  const router = useRouter()
   const [stepIndex, setStepIndex] = useState(0)
   const [barsVisible, setBarsVisible] = useState(false)
   const [barWidths, setBarWidths] = useState(subjectScores.map(() => 0))
   const [pulsePhase, setPulsePhase] = useState(0)
+
+  useEffect(() => {
+    // Redirect to report after all steps complete
+    const redirectTimer = setTimeout(() => {
+      router.push("/report")
+    }, steps.length * 900 + 2200)
+    return () => clearTimeout(redirectTimer)
+  }, [router])
 
   useEffect(() => {
     // Cycle through steps
