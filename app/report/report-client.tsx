@@ -292,8 +292,9 @@ export function ReportClient() {
           <Button
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-semibold flex-shrink-0"
+            render={<a href="/graph" />}
           >
-            Start Learning Roadmap
+            Explore Knowledge Graph
             <ArrowRight className="size-4" />
           </Button>
         </div>
