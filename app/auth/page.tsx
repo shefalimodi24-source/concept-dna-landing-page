@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Dna, ArrowRight, BookOpen, Map, Network, Eye, EyeOff, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -101,6 +102,7 @@ function GraphIllustration() {
 }
 
 export default function AuthPage() {
+  const router = useRouter()
   const [tab, setTab] = useState<"signin" | "signup">("signup")
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ name: "", email: "", password: "" })
@@ -239,7 +241,7 @@ export default function AuthPage() {
 
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => { e.preventDefault() }}
+            onSubmit={(e) => { e.preventDefault(); router.push("/onboarding") }}
           >
             {/* Full name — only for sign up */}
             {isSignUp && (
