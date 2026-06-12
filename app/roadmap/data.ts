@@ -1,5 +1,6 @@
 export type ResourceType = "video" | "article" | "course" | "practice"
 export type Difficulty = "Beginner" | "Intermediate" | "Advanced"
+export type TopicStatus = "completed" | "in-progress" | "available" | "locked"
 
 export interface Resource {
   title: string
@@ -15,6 +16,35 @@ export interface RoadmapStep {
   estimatedTime: string
   resources: Resource[]
   skills: string[]
+}
+
+// ── Sectioned roadmap types (richer, used by NLP and future detailed roadmaps) ──
+
+export interface RoadmapTopic {
+  id: string
+  title: string
+  description: string
+  difficulty: Difficulty
+  estimatedHours: number
+  prerequisites: string[]   // ids of prerequisite topics
+  skills: string[]
+  resources: Resource[]
+}
+
+export interface RoadmapSection {
+  id: string
+  title: string
+  color: string            // oklch color for section accent
+  bgColor: string
+  topics: RoadmapTopic[]
+}
+
+export interface SectionedRoadmap {
+  title: string
+  subtitle: string
+  totalMonths: number
+  totalHours: number
+  sections: RoadmapSection[]
 }
 
 export interface GeneratedRoadmap {
@@ -724,4 +754,483 @@ function generateGenericRoadmap(topic: string): GeneratedRoadmap {
 export function getRoadmap(topic: string): GeneratedRoadmap {
   const key = topic.trim().toLowerCase()
   return ROADMAP_DB[key] ?? generateGenericRoadmap(topic)
+}
+
+// ── NLP Sectioned Roadmap ────────────────────────────────────────────────────
+
+export const NLP_ROADMAP: SectionedRoadmap = {
+  title: "Natural Language Processing",
+  subtitle: "From mathematical foundations to production-ready language models",
+  totalMonths: 8,
+  totalHours: 320,
+  sections: [
+    {
+      id: "math",
+      title: "Mathematics Foundations",
+      color: "oklch(0.50 0.17 255)",
+      bgColor: "oklch(0.94 0.04 255)",
+      topics: [
+        {
+          id: "algebra",
+          title: "Algebra",
+          description: "Variables, equations, functions, and algebraic manipulation — the baseline for all quantitative reasoning.",
+          difficulty: "Beginner",
+          estimatedHours: 10,
+          prerequisites: [],
+          skills: ["Equations", "Polynomials", "Factoring", "Inequalities"],
+          resources: [
+            { title: "Khan Academy Algebra 1 & 2", type: "course", duration: "8 hrs" },
+            { title: "Algebra Basics for ML", type: "article", duration: "1 hr" },
+            { title: "Practice Problem Sets", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "functions",
+          title: "Functions",
+          description: "Domain, range, composition, inverse functions, logarithms, and exponentials used throughout ML loss functions.",
+          difficulty: "Beginner",
+          estimatedHours: 8,
+          prerequisites: ["algebra"],
+          skills: ["Exponentials", "Logarithms", "Composition", "Inverse functions"],
+          resources: [
+            { title: "Functions & Their Graphs", type: "video", duration: "3 hrs" },
+            { title: "Logarithms in Machine Learning", type: "article", duration: "1 hr" },
+            { title: "Function Sketching Practice", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "calculus",
+          title: "Calculus",
+          description: "Derivatives, chain rule, integrals, and gradients — the engine behind backpropagation and model training.",
+          difficulty: "Intermediate",
+          estimatedHours: 20,
+          prerequisites: ["functions"],
+          skills: ["Derivatives", "Chain rule", "Gradients", "Optimization"],
+          resources: [
+            { title: "3Blue1Brown — Essence of Calculus", type: "video", duration: "4 hrs" },
+            { title: "Calculus for ML Practitioners", type: "course", duration: "6 hrs" },
+            { title: "Gradient Descent from Scratch", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "linear-algebra",
+          title: "Linear Algebra",
+          description: "Vectors, matrices, dot products, eigenvalues, and SVD — the language of neural networks and embeddings.",
+          difficulty: "Intermediate",
+          estimatedHours: 20,
+          prerequisites: ["functions"],
+          skills: ["Matrices", "Dot product", "Eigenvectors", "SVD", "Transformations"],
+          resources: [
+            { title: "3Blue1Brown — Essence of Linear Algebra", type: "video", duration: "3.5 hrs" },
+            { title: "Linear Algebra for ML — Gilbert Strang", type: "course", duration: "8 hrs" },
+            { title: "NumPy Matrix Operations Lab", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "probability",
+          title: "Probability",
+          description: "Random variables, distributions, Bayes theorem, and conditional probability — core to language model scoring.",
+          difficulty: "Intermediate",
+          estimatedHours: 15,
+          prerequisites: ["calculus"],
+          skills: ["Distributions", "Bayes theorem", "Expectation", "Entropy"],
+          resources: [
+            { title: "Probability for Data Science", type: "course", duration: "5 hrs" },
+            { title: "Bayes Theorem Visualized", type: "video", duration: "1.5 hrs" },
+            { title: "Probability Problem Sets", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "statistics",
+          title: "Statistics",
+          description: "Hypothesis testing, confidence intervals, regression, and MLE — essential for evaluating and training NLP models.",
+          difficulty: "Intermediate",
+          estimatedHours: 15,
+          prerequisites: ["probability"],
+          skills: ["MLE", "Hypothesis testing", "Regression", "Confidence intervals"],
+          resources: [
+            { title: "Statistics for ML — fast.ai", type: "course", duration: "4 hrs" },
+            { title: "MLE vs MAP Estimation", type: "article", duration: "1 hr" },
+            { title: "Statistical Analysis Lab", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "information-theory",
+          title: "Information Theory",
+          description: "Entropy, cross-entropy, KL divergence, and mutual information — the measures used in every NLP loss function.",
+          difficulty: "Advanced",
+          estimatedHours: 10,
+          prerequisites: ["probability", "statistics"],
+          skills: ["Entropy", "Cross-entropy", "KL divergence", "Mutual information"],
+          resources: [
+            { title: "Visual Information Theory — Colah", type: "article", duration: "2 hrs" },
+            { title: "Information Theory for ML", type: "video", duration: "1.5 hrs" },
+            { title: "Entropy Calculations Practice", type: "practice", duration: "1 hr" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "programming",
+      title: "Programming Foundations",
+      color: "oklch(0.48 0.18 47)",
+      bgColor: "oklch(0.95 0.07 47)",
+      topics: [
+        {
+          id: "python",
+          title: "Python",
+          description: "Python syntax, data types, OOP, file I/O, and the standard library — the primary language of NLP and ML.",
+          difficulty: "Beginner",
+          estimatedHours: 20,
+          prerequisites: [],
+          skills: ["Python", "OOP", "File I/O", "Standard library"],
+          resources: [
+            { title: "Python for Everybody — Coursera", type: "course", duration: "10 hrs" },
+            { title: "Python Crash Course (book)", type: "article", duration: "4 hrs" },
+            { title: "Python Coding Exercises", type: "practice", duration: "4 hrs" },
+          ],
+        },
+        {
+          id: "data-structures",
+          title: "Data Structures",
+          description: "Arrays, linked lists, stacks, queues, hash maps, and trees — critical for efficient text processing pipelines.",
+          difficulty: "Beginner",
+          estimatedHours: 12,
+          prerequisites: ["python"],
+          skills: ["Arrays", "Hash maps", "Trees", "Graphs", "Complexity analysis"],
+          resources: [
+            { title: "Data Structures in Python", type: "course", duration: "5 hrs" },
+            { title: "Big-O Cheatsheet", type: "article", duration: "1 hr" },
+            { title: "LeetCode Easy Problems", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "algorithms",
+          title: "Algorithms",
+          description: "Sorting, searching, dynamic programming, and graph algorithms with complexity analysis.",
+          difficulty: "Intermediate",
+          estimatedHours: 15,
+          prerequisites: ["data-structures"],
+          skills: ["Sorting", "Dynamic programming", "Graph search", "Recursion"],
+          resources: [
+            { title: "Algorithms I — Princeton Coursera", type: "course", duration: "8 hrs" },
+            { title: "Grokking Algorithms (book)", type: "article", duration: "4 hrs" },
+            { title: "Algorithm Practice Problems", type: "practice", duration: "4 hrs" },
+          ],
+        },
+        {
+          id: "numpy",
+          title: "NumPy",
+          description: "N-dimensional arrays, vectorized operations, broadcasting, and linear algebra with NumPy — the backbone of all ML frameworks.",
+          difficulty: "Beginner",
+          estimatedHours: 8,
+          prerequisites: ["python"],
+          skills: ["ndarray", "Broadcasting", "Vectorization", "Linear algebra ops"],
+          resources: [
+            { title: "NumPy Official Tutorial", type: "article", duration: "2 hrs" },
+            { title: "NumPy for ML", type: "video", duration: "2 hrs" },
+            { title: "NumPy Operations Lab", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "pandas",
+          title: "Pandas",
+          description: "DataFrames, Series, merging, grouping, and cleaning tabular data — used for preparing NLP datasets.",
+          difficulty: "Beginner",
+          estimatedHours: 8,
+          prerequisites: ["numpy"],
+          skills: ["DataFrame", "Series", "GroupBy", "Merge", "Data cleaning"],
+          resources: [
+            { title: "Pandas Official 10 Minutes Guide", type: "article", duration: "1 hr" },
+            { title: "Data Analysis with Pandas", type: "course", duration: "4 hrs" },
+            { title: "Dataset Cleaning Exercise", type: "practice", duration: "2 hrs" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "ml",
+      title: "Machine Learning",
+      color: "oklch(0.45 0.16 145)",
+      bgColor: "oklch(0.93 0.06 145)",
+      topics: [
+        {
+          id: "regression",
+          title: "Regression",
+          description: "Linear and logistic regression, gradient descent, regularisation (L1/L2), and understanding model generalisation.",
+          difficulty: "Intermediate",
+          estimatedHours: 12,
+          prerequisites: ["calculus", "numpy", "pandas"],
+          skills: ["Linear regression", "Logistic regression", "L1/L2 regularisation", "Gradient descent"],
+          resources: [
+            { title: "Regression from Scratch in Python", type: "video", duration: "2 hrs" },
+            { title: "Regularisation Explained", type: "article", duration: "1 hr" },
+            { title: "Regression on Real Dataset", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "classification",
+          title: "Classification",
+          description: "Decision trees, SVMs, Naive Bayes, and k-NN — with a focus on Naive Bayes for its direct NLP applications.",
+          difficulty: "Intermediate",
+          estimatedHours: 12,
+          prerequisites: ["regression", "probability"],
+          skills: ["Naive Bayes", "SVM", "Decision trees", "k-NN", "Precision/Recall"],
+          resources: [
+            { title: "Text Classification with Naive Bayes", type: "video", duration: "1.5 hrs" },
+            { title: "Scikit-learn Classification Tutorial", type: "course", duration: "3 hrs" },
+            { title: "Spam Filter from Scratch", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "clustering",
+          title: "Clustering",
+          description: "K-means, DBSCAN, and hierarchical clustering — used in topic modelling and unsupervised NLP tasks.",
+          difficulty: "Intermediate",
+          estimatedHours: 8,
+          prerequisites: ["regression", "linear-algebra"],
+          skills: ["K-means", "DBSCAN", "Silhouette score", "Topic modelling"],
+          resources: [
+            { title: "Clustering Algorithms Overview", type: "video", duration: "1.5 hrs" },
+            { title: "K-means for Text Data", type: "article", duration: "1 hr" },
+            { title: "Document Clustering Lab", type: "practice", duration: "2 hrs" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "dl",
+      title: "Deep Learning",
+      color: "oklch(0.50 0.20 20)",
+      bgColor: "oklch(0.95 0.05 20)",
+      topics: [
+        {
+          id: "neural-networks",
+          title: "Neural Networks",
+          description: "Perceptrons, activation functions, backpropagation, batch normalisation, and training dynamics with PyTorch.",
+          difficulty: "Intermediate",
+          estimatedHours: 20,
+          prerequisites: ["classification", "calculus", "linear-algebra"],
+          skills: ["Backpropagation", "Activation functions", "Batch norm", "PyTorch"],
+          resources: [
+            { title: "Neural Networks from Scratch — Sentdex", type: "course", duration: "6 hrs" },
+            { title: "The Backpropagation Algorithm", type: "article", duration: "2 hrs" },
+            { title: "MNIST Digit Classifier", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "cnns",
+          title: "CNNs",
+          description: "Convolutional layers, pooling, and landmark architectures. Relevant for NLP tasks like document image understanding.",
+          difficulty: "Intermediate",
+          estimatedHours: 12,
+          prerequisites: ["neural-networks"],
+          skills: ["Convolutions", "Pooling", "ResNet", "Transfer learning"],
+          resources: [
+            { title: "CS231n — Stanford CNN Lectures", type: "video", duration: "5 hrs" },
+            { title: "CNN Architecture Guide", type: "article", duration: "1.5 hrs" },
+            { title: "Image Classification Project", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "rnns",
+          title: "RNNs",
+          description: "Recurrent neural networks for sequential data — understanding vanishing gradients and why LSTMs were needed.",
+          difficulty: "Intermediate",
+          estimatedHours: 10,
+          prerequisites: ["neural-networks"],
+          skills: ["RNN", "Vanishing gradients", "BPTT", "Sequence modelling"],
+          resources: [
+            { title: "Recurrent Neural Networks Explained", type: "video", duration: "1.5 hrs" },
+            { title: "The Unreasonable Effectiveness of RNNs — Karpathy", type: "article", duration: "1 hr" },
+            { title: "Char-RNN Language Model", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "lstms",
+          title: "LSTMs",
+          description: "Long Short-Term Memory networks — gates, cell state, and how LSTMs solved the vanishing gradient problem.",
+          difficulty: "Intermediate",
+          estimatedHours: 12,
+          prerequisites: ["rnns"],
+          skills: ["LSTM", "GRU", "Gates", "Sequence labelling", "Named entity recognition"],
+          resources: [
+            { title: "Understanding LSTMs — Colah's Blog", type: "article", duration: "2 hrs" },
+            { title: "LSTM for Text Generation", type: "video", duration: "1.5 hrs" },
+            { title: "NER with LSTM Lab", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "attention",
+          title: "Attention",
+          description: "Bahdanau and Luong attention, the seq2seq + attention model for machine translation, and intuition behind attention weights.",
+          difficulty: "Advanced",
+          estimatedHours: 12,
+          prerequisites: ["lstms", "information-theory"],
+          skills: ["Bahdanau attention", "Seq2seq", "Alignment", "Machine translation"],
+          resources: [
+            { title: "Neural Machine Translation by Jointly Learning to Align", type: "article", duration: "2 hrs" },
+            { title: "Attention Mechanism Explained Visually", type: "video", duration: "1.5 hrs" },
+            { title: "Seq2Seq Translation Lab", type: "practice", duration: "4 hrs" },
+          ],
+        },
+        {
+          id: "transformers",
+          title: "Transformers",
+          description: "Multi-head self-attention, positional encoding, encoder-decoder architecture, and the seminal 'Attention Is All You Need' paper.",
+          difficulty: "Advanced",
+          estimatedHours: 20,
+          prerequisites: ["attention"],
+          skills: ["Self-attention", "Multi-head attention", "Positional encoding", "Layer norm"],
+          resources: [
+            { title: "The Illustrated Transformer — Jay Alammar", type: "article", duration: "2.5 hrs" },
+            { title: "Attention Is All You Need Walkthrough", type: "video", duration: "2 hrs" },
+            { title: "Build a Transformer from Scratch", type: "practice", duration: "5 hrs" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "nlp",
+      title: "Natural Language Processing",
+      color: "oklch(0.55 0.20 255)",
+      bgColor: "oklch(0.93 0.06 255)",
+      topics: [
+        {
+          id: "text-processing",
+          title: "Text Processing",
+          description: "Tokenization, stemming, lemmatization, stop-word removal, regex, and building preprocessing pipelines with spaCy and NLTK.",
+          difficulty: "Beginner",
+          estimatedHours: 10,
+          prerequisites: ["python", "pandas"],
+          skills: ["Tokenization", "spaCy", "NLTK", "Regex", "Pipeline"],
+          resources: [
+            { title: "Text Preprocessing with spaCy", type: "video", duration: "1.5 hrs" },
+            { title: "NLTK Book — Chapters 1–3", type: "article", duration: "3 hrs" },
+            { title: "Build a Text Cleaner", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "embeddings",
+          title: "Embeddings",
+          description: "TF-IDF, Word2Vec, GloVe, FastText — how words are represented as dense vectors encoding semantic relationships.",
+          difficulty: "Intermediate",
+          estimatedHours: 12,
+          prerequisites: ["text-processing", "linear-algebra", "statistics"],
+          skills: ["Word2Vec", "GloVe", "FastText", "Cosine similarity", "TF-IDF"],
+          resources: [
+            { title: "The Illustrated Word2Vec — Jay Alammar", type: "article", duration: "2 hrs" },
+            { title: "Word Embeddings Deep Dive", type: "video", duration: "1.5 hrs" },
+            { title: "Semantic Similarity Explorer", type: "practice", duration: "2 hrs" },
+          ],
+        },
+        {
+          id: "bert",
+          title: "BERT",
+          description: "Bidirectional Encoder Representations from Transformers — pre-training objectives, fine-tuning, and using HuggingFace Transformers.",
+          difficulty: "Advanced",
+          estimatedHours: 16,
+          prerequisites: ["transformers", "embeddings"],
+          skills: ["BERT", "MLM", "Fine-tuning", "HuggingFace", "Tokenizers"],
+          resources: [
+            { title: "BERT Explained — Jay Alammar", type: "article", duration: "2 hrs" },
+            { title: "Fine-Tuning BERT for Classification", type: "course", duration: "4 hrs" },
+            { title: "Sentiment Analysis with BERT", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "gpt",
+          title: "GPT",
+          description: "GPT architecture, autoregressive language modelling, prompt engineering, and interacting with large language models via APIs.",
+          difficulty: "Advanced",
+          estimatedHours: 16,
+          prerequisites: ["transformers"],
+          skills: ["GPT", "Autoregressive LM", "Prompt engineering", "OpenAI API", "In-context learning"],
+          resources: [
+            { title: "The Illustrated GPT-2 — Jay Alammar", type: "article", duration: "2 hrs" },
+            { title: "GPT-3 Paper Walkthrough", type: "video", duration: "2 hrs" },
+            { title: "Prompt Engineering Lab", type: "practice", duration: "3 hrs" },
+          ],
+        },
+        {
+          id: "retrieval-systems",
+          title: "Retrieval Systems",
+          description: "Dense retrieval, BM25, vector databases (FAISS, Pinecone), and building RAG (Retrieval-Augmented Generation) pipelines.",
+          difficulty: "Advanced",
+          estimatedHours: 14,
+          prerequisites: ["bert", "gpt", "embeddings"],
+          skills: ["BM25", "FAISS", "Vector search", "RAG", "LangChain"],
+          resources: [
+            { title: "Dense Passage Retrieval Paper", type: "article", duration: "1.5 hrs" },
+            { title: "Build a RAG System with LangChain", type: "course", duration: "3 hrs" },
+            { title: "Semantic Search with FAISS", type: "practice", duration: "3 hrs" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "projects",
+      title: "Projects",
+      color: "oklch(0.50 0.16 320)",
+      bgColor: "oklch(0.95 0.04 320)",
+      topics: [
+        {
+          id: "sentiment-analysis",
+          title: "Sentiment Analysis",
+          description: "End-to-end sentiment classifier: scrape data, preprocess, fine-tune BERT, evaluate, and expose a REST API.",
+          difficulty: "Intermediate",
+          estimatedHours: 20,
+          prerequisites: ["bert", "text-processing"],
+          skills: ["Data scraping", "BERT fine-tuning", "FastAPI", "Model evaluation"],
+          resources: [
+            { title: "Sentiment Analysis with Transformers", type: "course", duration: "4 hrs" },
+            { title: "Deploying NLP Models with FastAPI", type: "article", duration: "1.5 hrs" },
+            { title: "Complete Sentiment Project", type: "practice", duration: "10 hrs" },
+          ],
+        },
+        {
+          id: "chatbot",
+          title: "Chatbot",
+          description: "Build a context-aware chatbot using an LLM API, memory management, streaming responses, and a simple front-end.",
+          difficulty: "Advanced",
+          estimatedHours: 20,
+          prerequisites: ["gpt", "retrieval-systems"],
+          skills: ["LLM API", "Memory management", "Streaming", "LangChain", "React"],
+          resources: [
+            { title: "LangChain Chatbot Tutorial", type: "course", duration: "3 hrs" },
+            { title: "Building Production Chatbots", type: "video", duration: "2 hrs" },
+            { title: "Full-Stack Chatbot Project", type: "practice", duration: "12 hrs" },
+          ],
+        },
+        {
+          id: "rag-system",
+          title: "RAG System",
+          description: "Retrieval-Augmented Generation over your own documents — ingest, chunk, embed, store in a vector DB, and answer questions.",
+          difficulty: "Advanced",
+          estimatedHours: 25,
+          prerequisites: ["retrieval-systems", "chatbot"],
+          skills: ["RAG", "Chunking", "Vector DB", "LangChain", "Evaluation"],
+          resources: [
+            { title: "RAG from Scratch — LangChain", type: "course", duration: "5 hrs" },
+            { title: "Evaluating RAG Pipelines", type: "article", duration: "1.5 hrs" },
+            { title: "Document Q&A RAG App", type: "practice", duration: "15 hrs" },
+          ],
+        },
+        {
+          id: "research-assistant",
+          title: "Research Assistant",
+          description: "AI agent that searches papers, summarises findings, extracts citations, and generates structured research reports.",
+          difficulty: "Advanced",
+          estimatedHours: 30,
+          prerequisites: ["rag-system"],
+          skills: ["AI agents", "Tool use", "Paper parsing", "Summarisation", "Report generation"],
+          resources: [
+            { title: "LangChain Agents Deep Dive", type: "course", duration: "4 hrs" },
+            { title: "Building AI Research Tools", type: "video", duration: "2 hrs" },
+            { title: "Research Assistant Capstone", type: "practice", duration: "20 hrs" },
+          ],
+        },
+      ],
+    },
+  ],
 }

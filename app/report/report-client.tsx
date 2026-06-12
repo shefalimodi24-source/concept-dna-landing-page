@@ -218,7 +218,7 @@ export function ReportClient() {
               <h2 className="text-base font-semibold text-foreground">Recommended Next Concepts</h2>
               <p className="text-xs text-muted-foreground">AI-curated learning targets based on your gaps</p>
             </div>
-            <Button variant="ghost" size="sm" className="gap-1 text-primary hover:text-primary/80 font-medium text-xs" render={<a href="/roadmap" />}>
+            <Button variant="ghost" size="sm" className="gap-1 text-primary hover:text-primary/80 font-medium text-xs" nativeButton={false} render={<a href="/roadmap" />}>
               View full roadmap
               <ChevronRight className="size-3.5" />
             </Button>
@@ -292,6 +292,7 @@ export function ReportClient() {
           <Button
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-semibold flex-shrink-0"
+            nativeButton={false}
             render={<a href="/graph" />}
           >
             Explore Knowledge Graph

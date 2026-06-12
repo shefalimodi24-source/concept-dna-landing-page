@@ -60,7 +60,7 @@ export function Navbar() {
           <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
             Sign In
           </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium" render={<a href="/assessment" />}>
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium" nativeButton={false} render={<a href="/assessment" />}>
             Get Started
           </Button>
         </div>
@@ -92,7 +92,7 @@ export function Navbar() {
             <Button variant="ghost" size="sm" className="justify-start text-muted-foreground">
               Sign In
             </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" render={<a href="/assessment" />}>
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" nativeButton={false} render={<a href="/assessment" />}>
               Get Started
             </Button>
           </div>

@@ -55,7 +55,14 @@ function EmptyState({ onSuggest }: { onSuggest: (topic: string) => void }) {
           {SUGGESTED_TOPICS.map((topic) => (
             <button
               key={topic.title}
-              onClick={() => onSuggest(topic.title)}
+              onClick={() => {
+                // NLP has a dedicated detailed page
+                if (topic.title === "Natural Language Processing") {
+                  window.location.href = "/roadmap/nlp"
+                  return
+                }
+                onSuggest(topic.title)
+              }}
               className="flex flex-col gap-2.5 p-4 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 text-left group"
             >
               {/* Subject pill */}
@@ -195,6 +202,7 @@ export function RoadmapClient() {
             <Button
               size="sm"
               className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
+              nativeButton={false}
               render={<a href="/graph" />}
             >
               <BookOpen className="size-3.5" />

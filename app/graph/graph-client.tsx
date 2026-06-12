@@ -74,6 +74,7 @@ export function GraphClient() {
             <Button
               size="sm"
               className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
+              nativeButton={false}
               render={<a href="/report" />}
             >
               <Activity className="size-3.5" />
