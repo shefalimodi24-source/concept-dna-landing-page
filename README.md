@@ -148,4 +148,4 @@ in your browser to view the application.
 
 ## Team
 
-Built for DSH Hacks V1 – AI × STEM Education.
+Built for DSH Hacks V1 – AI × STEM E
