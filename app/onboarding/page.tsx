@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -197,6 +197,23 @@ export default function OnboardingPage() {
     )
   }, [search])
 
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const q = search.trim()
+    if (!q) return
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = setTimeout(() => {
+      if (typeof window !== "undefined" && window.pendo) {
+        pendo.track("onboarding_topic_searched", {
+          search_query: q,
+          results_count: filtered.length,
+          total_available_goals: GOALS.length,
+        })
+      }
+    }, 800)
+    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
+  }, [search, filtered.length])
+
   function toggle(id: string) {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
@@ -216,6 +233,17 @@ export default function OnboardingPage() {
 
   function handleGenerate() {
     if (!selected.length) return
+    if (typeof window !== "undefined" && window.pendo && preview) {
+      pendo.track("learning_goals_selected", {
+        selected_goals: selected.join(","),
+        goal_count: selected.length,
+        primary_goal_id: preview.primaryGoal.id,
+        primary_goal_label: preview.primaryGoal.label,
+        total_concepts: preview.totalConcepts,
+        estimated_months: preview.maxMonths,
+        career_paths: preview.careers.join(","),
+      })
+    }
     setShowQuiz(true)
   }
 

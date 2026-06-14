@@ -152,6 +152,16 @@ export function RoadmapClient() {
         const result = getRoadmap(trimmed)
         setRoadmap(result)
         setGeneratedFor(trimmed)
+
+        if (typeof window !== "undefined" && window.pendo && result) {
+          pendo.track("roadmap_generated", {
+            topic: trimmed,
+            steps_count: result.steps.length,
+            total_time: result.totalTime,
+            source: "search",
+          })
+        }
+
         setTimeout(() => {
           resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
         }, 100)

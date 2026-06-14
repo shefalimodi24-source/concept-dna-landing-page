@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import {
   Search, ZoomIn, ZoomOut, Maximize2, Dna, SlidersHorizontal,
   LayoutGrid, Activity, Map, ChevronRight
@@ -31,6 +31,29 @@ export function GraphClient() {
   const [filter, setFilter] = useState<NodeStatus | "all">("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [zoomKey, setZoomKey] = useState(0) // triggers zoom reset
+
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const q = searchQuery.trim()
+    if (!q) return
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = setTimeout(() => {
+      if (typeof window !== "undefined" && window.pendo) {
+        const filteredNodes = NODES.filter((n) => {
+          const matchesSearch = n.label.toLowerCase().includes(q.toLowerCase())
+          const matchesFilter = filter === "all" || n.status === filter
+          return matchesSearch && matchesFilter
+        })
+        pendo.track("concept_search_executed", {
+          search_query: q,
+          filter_status: filter,
+          results_count: filteredNodes.length,
+          total_nodes: NODES.length,
+        })
+      }
+    }, 800)
+    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
+  }, [searchQuery, filter])
 
   const handleSelect = useCallback((node: GraphNode) => {
     setSelectedNode(node)

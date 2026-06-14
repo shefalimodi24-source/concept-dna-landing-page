@@ -364,11 +364,33 @@ export function NLPRoadmapDisplay({ roadmap }: { roadmap: SectionedRoadmap }) {
   )
 
   const toggle = (id: string) => {
+    const wasCompleted = completed.has(id)
     setCompleted((prev) => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
       return next
     })
+
+    if (typeof window !== "undefined" && window.pendo) {
+      const topic = allTopicsById[id]
+      const section = roadmap.sections.find((s) => s.topics.some((t) => t.id === id))
+      const sectionCompletedCount = section
+        ? section.topics.filter((t) => (t.id === id ? !wasCompleted : completed.has(t.id))).length
+        : 0
+      const newOverallCompleted = wasCompleted ? completedCount - 1 : completedCount + 1
+      pendo.track("nlp_roadmap_topic_completed", {
+        topic_id: id,
+        topic_title: topic?.title ?? "",
+        section_id: section?.id ?? "",
+        section_title: section?.title ?? "",
+        is_completed: !wasCompleted,
+        section_completed_count: sectionCompletedCount,
+        section_total_topics: section?.topics.length ?? 0,
+        overall_completed_count: newOverallCompleted,
+        overall_total_topics: totalTopics,
+        overall_progress_pct: Math.round((newOverallCompleted / totalTopics) * 100),
+      })
+    }
   }
 
   const totalTopics = roadmap.sections.reduce((acc, s) => acc + s.topics.length, 0)

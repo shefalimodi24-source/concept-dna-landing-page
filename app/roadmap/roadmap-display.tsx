@@ -192,11 +192,28 @@ export function RoadmapDisplay({ roadmap }: { roadmap: GeneratedRoadmap }) {
   const [completed, setCompleted] = useState<Set<number>>(new Set())
 
   const toggleComplete = (id: number) => {
+    const wasCompleted = completed.has(id)
     setCompleted((prev) => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
       return next
     })
+
+    if (typeof window !== "undefined" && window.pendo) {
+      const step = roadmap.steps.find((s) => s.id === id)
+      const stepIndex = roadmap.steps.findIndex((s) => s.id === id)
+      const newCompletedCount = wasCompleted ? completedCount - 1 : completedCount + 1
+      pendo.track("roadmap_step_completed", {
+        step_id: id,
+        step_title: step?.title ?? "",
+        step_index: stepIndex,
+        is_completed: !wasCompleted,
+        completed_count: newCompletedCount,
+        total_steps: totalSteps,
+        progress_percentage: Math.round((newCompletedCount / totalSteps) * 100),
+        roadmap_topic: roadmap.topic,
+      })
+    }
   }
 
   const completedCount = completed.size

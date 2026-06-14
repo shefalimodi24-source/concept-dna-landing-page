@@ -186,6 +186,19 @@ export function QuizModal({
     updated[current] = idx
     setAnswers(updated)
     setRevealed(true)
+
+    if (typeof window !== "undefined" && window.pendo) {
+      pendo.track("assessment_answer_submitted", {
+        question_id: question.id,
+        question_topic: question.topic,
+        is_correct: idx === question.correctIndex,
+        selected_option_index: idx,
+        correct_option_index: question.correctIndex,
+        question_number: current + 1,
+        total_questions: questions.length,
+        goal_id: goalId,
+      })
+    }
   }
 
   function goNext() {
@@ -197,6 +210,24 @@ export function QuizModal({
       const r = computeResult(answers, questions, goalLabel, goalColor, goalMonths, careers)
       setResult(r)
       setPhase("results")
+
+      if (typeof window !== "undefined" && window.pendo) {
+        const correctCount = answers.filter((a, i) => a === questions[i].correctIndex).length
+        pendo.track("assessment_quiz_completed", {
+          goal_id: goalId,
+          goal_label: r.goalLabel,
+          assessment_score: r.assessmentScore,
+          readiness_score: r.readinessScore,
+          strengths_count: r.strengths.length,
+          weaknesses_count: r.weaknesses.length,
+          strengths: r.strengths.join(","),
+          weaknesses: r.weaknesses.join(","),
+          highest_impact_topic: r.highestImpactTopic,
+          estimated_months: r.estimatedMonths,
+          total_questions: questions.length,
+          correct_answers_count: correctCount,
+        })
+      }
     }
   }
 
@@ -235,7 +266,19 @@ export function QuizModal({
         ) : result ? (
           <ResultsPhase
             result={result}
-            onContinue={() => router.push("/dashboard")}
+            onContinue={() => {
+              if (typeof window !== "undefined" && window.pendo) {
+                pendo.track("onboarding_completed", {
+                  goal_label: result.goalLabel,
+                  assessment_score: result.assessmentScore,
+                  readiness_score: result.readinessScore,
+                  highest_impact_topic: result.highestImpactTopic,
+                  estimated_months: result.estimatedMonths,
+                  career_paths: result.careers.join(","),
+                })
+              }
+              router.push("/dashboard")
+            }}
             onClose={onClose}
           />
         ) : null}

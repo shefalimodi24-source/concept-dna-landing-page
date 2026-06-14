@@ -40,11 +40,35 @@ export function ReportClient() {
         pageLabel="STEM DNA Report"
         rightSlot={
           <>
-            <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
+              onClick={() => {
+                if (typeof window !== "undefined" && window.pendo) {
+                  pendo.track("report_shared", {
+                    report_score: d.overallScore,
+                    share_method: "button",
+                  })
+                }
+              }}
+            >
               <Share2 className="size-3.5" />
               <span className="hidden sm:inline">Share</span>
             </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5">
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
+              onClick={() => {
+                if (typeof window !== "undefined" && window.pendo) {
+                  pendo.track("report_exported", {
+                    report_score: d.overallScore,
+                    report_date: d.generatedAt,
+                    export_format: "pdf",
+                  })
+                }
+              }}
+            >
               <Download className="size-3.5" />
               <span className="hidden sm:inline">Export PDF</span>
             </Button>
