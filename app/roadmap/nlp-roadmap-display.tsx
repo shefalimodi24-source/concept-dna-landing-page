@@ -364,6 +364,29 @@ export function NLPRoadmapDisplay({ roadmap }: { roadmap: SectionedRoadmap }) {
   )
 
   const toggle = (id: string) => {
+    const willComplete = !completed.has(id)
+    const topic = allTopicsById[id]
+    const section = roadmap.sections.find((s) => s.topics.some((t) => t.id === id))
+    const newCount = willComplete ? completedCount + 1 : completedCount - 1
+    // Count how many topics become unlocked by completing this topic
+    const topicsUnlocked = willComplete
+      ? roadmap.sections
+          .flatMap((s) => s.topics)
+          .filter((t) => t.prerequisites.includes(id) && statuses[t.id] === "locked")
+          .length
+      : 0
+    pendo.track("roadmap_topic_completed", {
+      topic_id: id,
+      topic_title: topic?.title || "",
+      topic_difficulty: topic?.difficulty || "",
+      section_title: section?.title || "",
+      action: willComplete ? "completed" : "uncompleted",
+      completed_count: newCount,
+      total_topics: totalTopics,
+      progress_percentage: Math.round((newCount / totalTopics) * 100),
+      estimated_hours: topic?.estimatedHours || 0,
+      topics_unlocked: topicsUnlocked,
+    })
     setCompleted((prev) => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)

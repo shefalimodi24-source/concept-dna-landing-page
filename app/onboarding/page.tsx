@@ -216,6 +216,18 @@ export default function OnboardingPage() {
 
   function handleGenerate() {
     if (!selected.length) return
+    const goals = GOALS.filter((g) => selected.includes(g.id))
+    const totalConcepts = goals.reduce((a, g) => a + g.concepts, 0)
+    const maxMonths = Math.max(...goals.map((g) => g.months))
+    const careers = [...new Set(goals.flatMap((g) => g.careers))].slice(0, 4)
+    pendo.track("learning_goals_selected", {
+      selected_goals: selected.join(","),
+      goal_count: selected.length,
+      total_concepts: totalConcepts,
+      max_months: maxMonths,
+      primary_goal: goals[0].label,
+      career_paths: careers.join(","),
+    })
     setShowQuiz(true)
   }
 

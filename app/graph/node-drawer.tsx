@@ -254,6 +254,16 @@ export function NodeDrawer({ node, onClose }: NodeDrawerProps) {
                 className="w-full gap-2 font-medium"
                 variant="outline"
                 size="sm"
+                onClick={() => {
+                  pendo.track("concept_added_to_roadmap", {
+                    concept_id: node.id,
+                    concept_label: node.label,
+                    concept_status: node.status,
+                    mastery_percentage: node.mastery,
+                    subject: node.subject,
+                    source_page: "graph_drawer",
+                  })
+                }}
               >
                 Add to Learning Roadmap
                 <ArrowRight className="size-3.5" />

@@ -195,6 +195,20 @@ export function QuizModal({
     } else {
       // Compute results
       const r = computeResult(answers, questions, goalLabel, goalColor, goalMonths, careers)
+      const correctCount = answers.filter((a, i) => a === questions[i].correctIndex).length
+      pendo.track("assessment_completed", {
+        goal_id: goalId,
+        goal_label: r.goalLabel,
+        assessment_score: r.assessmentScore,
+        readiness_score: r.readinessScore,
+        strengths: r.strengths.join(","),
+        weaknesses: r.weaknesses.join(","),
+        highest_impact_topic: r.highestImpactTopic,
+        estimated_months: r.estimatedMonths,
+        questions_answered: answers.filter((a) => a !== null).length,
+        total_questions: questions.length,
+        correct_count: correctCount,
+      })
       setResult(r)
       setPhase("results")
     }
@@ -235,7 +249,19 @@ export function QuizModal({
         ) : result ? (
           <ResultsPhase
             result={result}
-            onContinue={() => router.push("/dashboard")}
+            onContinue={() => {
+              pendo.track("onboarding_completed", {
+                goal_label: result.goalLabel,
+                assessment_score: result.assessmentScore,
+                readiness_score: result.readinessScore,
+                strengths_count: result.strengths.length,
+                weaknesses_count: result.weaknesses.length,
+                highest_impact_topic: result.highestImpactTopic,
+                estimated_months: result.estimatedMonths,
+                target_careers: result.careers.join(","),
+              })
+              router.push("/dashboard")
+            }}
             onClose={onClose}
           />
         ) : null}
