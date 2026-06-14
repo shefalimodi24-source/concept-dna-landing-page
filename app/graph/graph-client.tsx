@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import {
   Search, ZoomIn, ZoomOut, Maximize2, Dna, SlidersHorizontal,
   LayoutGrid, Activity, Map, ChevronRight
@@ -32,7 +32,38 @@ export function GraphClient() {
   const [searchQuery, setSearchQuery] = useState("")
   const [zoomKey, setZoomKey] = useState(0) // triggers zoom reset
 
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const trimmed = searchQuery.trim()
+    if (!trimmed) return
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current)
+    searchDebounceRef.current = setTimeout(() => {
+      const results = NODES.filter((n) =>
+        n.label.toLowerCase().includes(trimmed.toLowerCase())
+      )
+      pendo.track("concept_searched", {
+        query: trimmed,
+        results_count: results.length,
+        active_filter: filter,
+      })
+    }, 500)
+    return () => {
+      if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current)
+    }
+  }, [searchQuery, filter])
+
   const handleSelect = useCallback((node: GraphNode) => {
+    pendo.track("concept_explored", {
+      concept_id: node.id,
+      concept_label: node.label,
+      concept_status: node.status,
+      mastery_percentage: node.mastery,
+      subject: node.subject,
+      has_prerequisites: node.prerequisites.length > 0,
+      prerequisites_count: node.prerequisites.length,
+      unlocks_count: node.unlocks.length,
+      resources_count: node.resources.length,
+    })
     setSelectedNode(node)
   }, [])
 

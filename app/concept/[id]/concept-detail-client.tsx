@@ -846,6 +846,16 @@ export function ConceptDetailClient() {
               size="sm"
               nativeButton={false}
               render={<a href="/roadmap" />}
+              onClick={() => {
+                pendo.track("concept_added_to_roadmap", {
+                  concept_id: node.id,
+                  concept_label: node.label,
+                  concept_status: node.status,
+                  mastery_percentage: node.mastery,
+                  subject: node.subject,
+                  source_page: "concept_detail",
+                })
+              }}
             >
               Add to Learning Roadmap
               <ArrowRight className="size-3.5" />

@@ -140,7 +140,7 @@ export function RoadmapClient() {
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
 
-  const generate = (topic: string) => {
+  const generate = (topic: string, source: string) => {
     const trimmed = topic.trim()
     if (!trimmed) return
     setQuery(trimmed)
@@ -152,6 +152,12 @@ export function RoadmapClient() {
         const result = getRoadmap(trimmed)
         setRoadmap(result)
         setGeneratedFor(trimmed)
+        pendo.track("roadmap_generated", {
+          topic: trimmed,
+          total_steps: result.steps.length,
+          total_time: result.totalTime,
+          source: source,
+        })
         setTimeout(() => {
           resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
         }, 100)
@@ -161,12 +167,20 @@ export function RoadmapClient() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    generate(query)
+    pendo.track("roadmap_topic_searched", {
+      query: query.trim(),
+      source: "search",
+    })
+    generate(query, "search")
   }
 
   const handleSuggest = (topic: string) => {
     setQuery(topic)
-    generate(topic)
+    pendo.track("roadmap_topic_searched", {
+      query: topic,
+      source: "suggestion",
+    })
+    generate(topic, "suggestion")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 

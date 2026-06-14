@@ -241,7 +241,21 @@ export default function AuthPage() {
 
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => { e.preventDefault(); router.push("/onboarding") }}
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (isSignUp) {
+                pendo.track("account_created", {
+                  auth_method: "email",
+                  has_name: Boolean(form.name),
+                  has_email: Boolean(form.email),
+                })
+              } else {
+                pendo.track("user_signed_in", {
+                  auth_method: "email",
+                })
+              }
+              router.push("/onboarding")
+            }}
           >
             {/* Full name — only for sign up */}
             {isSignUp && (
